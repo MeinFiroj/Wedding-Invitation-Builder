@@ -7,7 +7,8 @@ import Home from "@/pages/Home";
 import TemplatesPage from "@/pages/TemplatesPage";
 import EditorPage from "@/pages/EditorPage";
 import InvitationPage from "@/pages/InvitationPage";
-import MyInvitationsPage from "./pages/MyInvitationsPage";
+import MyInvitationsPage from "@/pages/MyInvitationsPage";
+import Splash from "@/components/Splash";
 
 function Layout() {
   const { pathname, hash } = useLocation();
@@ -32,6 +33,7 @@ function Layout() {
 export default function App() {
   return (
     <InvitationProvider>
+      <Splash/>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
