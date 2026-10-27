@@ -24,10 +24,10 @@ export default function TemplateCard({ template }) {
             {badge}
           </span>
         )}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center border">
           <Link
             to={`/invite/demo?template=${id}`}
-            className="flex items-center gap-1.5 px-4 py-2 bg-ink/15 backdrop-blur-sm text-ink text-[13px] rounded hover:bg-ink/25 transition-colors"
+            className="flex items-center justify-center gap-1.5 px-4 py-2 bg-ink/15 backdrop-blur-sm text-ink text-[13px] rounded hover:bg-ink/25 transition-colors h-full w-full "
           >
             <Eye size={14} /> Preview
           </Link>
