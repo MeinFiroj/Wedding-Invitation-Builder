@@ -106,7 +106,7 @@ export default function HeroSection() {
       const r = canvas.getBoundingClientRect();
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     };
-    const onMove = (e) => Object.assign(mouse, toLocal(e.touches?.[0] ?? e));
+    const onMove = (e) => Object.assign(mouse, toLocal(e));
     const onLeave = () => Object.assign(mouse, { x: -1000, y: -1000 });
     const onClick = (e) => Object.assign(click, toLocal(e), { strength: 80, radius: 150 });
     // Only rebuild when width changes (mobile scroll fires resize when the address bar hides)
@@ -123,7 +123,6 @@ export default function HeroSection() {
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', onLeave);
     canvas.addEventListener('click', onClick);
-    canvas.addEventListener('touchmove', onMove, { passive: true });
 
     return () => {
       cancelled = true;
@@ -132,13 +131,12 @@ export default function HeroSection() {
       canvas.removeEventListener('mousemove', onMove);
       canvas.removeEventListener('mouseleave', onLeave);
       canvas.removeEventListener('click', onClick);
-      canvas.removeEventListener('touchmove', onMove);
     };
   }, []);
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-canvas">
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full touch-none" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6 pointer-events-none">
         <span className="mb-6 text-[11px] font-semibold tracking-[0.08em] uppercase text-gold">
