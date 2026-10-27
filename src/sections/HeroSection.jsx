@@ -135,7 +135,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-canvas">
+    <section className="relative w-full h-dvh overflow-hidden bg-canvas">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6 pointer-events-none">

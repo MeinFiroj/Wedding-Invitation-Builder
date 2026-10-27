@@ -169,7 +169,7 @@ export default function EditorPage() {
 
   return (
     <main className="min-h-screen pt-16 flex flex-col lg:flex-row">
-      <div className="w-full lg:w-2/5 h-[calc(100vh-4rem)] flex flex-col bg-surface border-r border-line">
+      <div className="w-full lg:w-2/5 h-[calc(100dvh-4rem)] flex flex-col bg-surface border-r border-line">
         <div className="flex items-center justify-between px-6 py-4 border-b border-line">
           <Link
             to="/templates"
@@ -430,7 +430,7 @@ export default function EditorPage() {
       </div>
 
       {/* Live preview */}
-      <div className="hidden lg:block w-3/5 h-[calc(100vh-4rem)] overflow-y-auto">
+      <div className="hidden lg:block w-3/5 h-[calc(100dvh-4rem)] overflow-y-auto">
         <InvitationPreview template={template} data={data} autoOpen />
       </div>
     </main>

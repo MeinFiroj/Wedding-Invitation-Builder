@@ -294,7 +294,7 @@ export default function InvitationPreview({
     <div
       style={vars}
       // while the doors are closed the page can't scroll
-      className={`min-h-screen bg-(--bg) text-(--ink) ${opened ? "" : "h-screen overflow-hidden"}`}
+      className={`min-h-dvh bg-(--bg) text-(--ink) ${opened ? "" : "h-dvh overflow-hidden"}`}
     >
       {!coverGone && (
         <Cover
