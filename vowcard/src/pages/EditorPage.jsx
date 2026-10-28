@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, Link, useNavigate } from 'react-router';
-import { ArrowLeft, ArrowRight, Sparkles, Copy, MessageCircle, Check,Share2 } from "lucide-react";
+import { useSearchParams, Link } from "react-router";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Sparkles,
+  Copy,
+  MessageCircle,
+  Check,
+  Share2,
+} from "lucide-react";
 import { useInvitation } from "@/context/InvitationContext";
 import { templates } from "@/data/templates";
 import { formatDate, formatTime } from "@/utils/format";
 import InvitationPreview from "@/components/InvitationPreview";
-import { sharePath, shareUrl } from '@/utils/share';
+import { sharePath, shareUrl } from "@/utils/share";
 
 const stepTitles = [
   "Couple Details",
@@ -89,59 +97,86 @@ function ListEditor({ label, items, blank, onChange, children }) {
 
 function ShareActions({ data }) {
   const { saveCard } = useInvitation();
-  const navigate = useNavigate();
+  const [id, setId] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
-  const url = shareUrl(data);
+
+  useEffect(() => setId(null), [data]); // edited again, so generate (update) again
+
+  const generate = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      setId(await saveCard());
+    } catch {
+      setError("Could not save. Check your connection and try again.");
+    }
+    setBusy(false);
+  };
+
+  if (!id)
+    return (
+      <div className="space-y-3">
+        <button
+          onClick={generate}
+          disabled={busy}
+          className="flex items-center justify-center gap-2 w-full py-4 bg-gold text-canvas text-sm font-medium rounded hover:bg-gold/90 transition-colors disabled:opacity-60"
+        >
+          <Sparkles size={16} /> {busy ? "Saving…" : "Generate Invitation"}
+        </button>
+        {error && <p className="text-xs text-center text-red-400">{error}</p>}
+      </div>
+    );
+
+  const url = shareUrl(id);
   const text = `You're invited to ${data.partner1Name} & ${data.partner2Name}'s wedding!`;
   const btn =
-    'flex items-center justify-center gap-2 py-3 text-[13px] font-medium rounded border border-line-strong hover:bg-line transition-colors';
-
-  const preview = () => {
-    saveCard();
-    navigate(sharePath(data));
-  };
-  const copy = async () => {
-    saveCard();
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    "flex items-center justify-center gap-2 py-3 text-[13px] font-medium rounded border border-line-strong hover:bg-line transition-colors";
 
   return (
     <div className="space-y-3">
-      <button
-        onClick={preview}
+      <p className="text-xs text-center break-all text-gold">{url}</p>
+      <Link
+        to={sharePath(id)}
         className="flex items-center justify-center gap-2 w-full py-4 bg-gold text-canvas text-sm font-medium rounded hover:bg-gold/90 transition-colors"
       >
-        <Sparkles size={16} /> Save &amp; Preview Invitation
-      </button>
+        <Sparkles size={16} /> Preview Your Invitation
+      </Link>
       <div className="grid grid-cols-2 gap-3">
         <a
           href={`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`}
-          onClick={saveCard}
           target="_blank"
           rel="noopener noreferrer"
           className={btn}
         >
           <MessageCircle size={14} /> WhatsApp
         </a>
-        <button onClick={copy} className={btn}>
-          {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? 'Copied!' : 'Copy Link'}
+        <button
+          onClick={async () => {
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }}
+          className={btn}
+        >
+          {copied ? <Check size={14} /> : <Copy size={14} />}{" "}
+          {copied ? "Copied!" : "Copy Link"}
         </button>
       </div>
       {navigator.share && (
         <button
-          onClick={() => {
-            saveCard();
-            navigator.share({ title: text, url }).catch(() => {});
-          }}
+          onClick={() => navigator.share({ title: text, url }).catch(() => {})}
           className={`${btn} w-full`}
         >
           <Share2 size={14} /> More Options
         </button>
       )}
-      <Link to="/my-invitations" className="block pt-1 text-center text-xs text-ink-muted hover:text-gold transition-colors">
-        Saved on this device &middot; View My Invitations
+      <Link
+        to="/my-invitations"
+        className="block pt-1 text-xs text-center text-ink-muted hover:text-gold transition-colors"
+      >
+        Saved &middot; View My Invitations
       </Link>
     </div>
   );
@@ -177,7 +212,9 @@ export default function EditorPage() {
           >
             <ArrowLeft size={14} /> Back
           </Link>
-          <span className="hidden sm:block text-[11px] text-ink-muted">Draft auto-saved</span>
+          <span className="hidden sm:block text-[11px] text-ink-muted">
+            Draft auto-saved
+          </span>
           <span className="text-[13px] font-medium text-gold">
             {template.name}
           </span>

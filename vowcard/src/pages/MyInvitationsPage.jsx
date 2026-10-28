@@ -23,7 +23,7 @@ export default function MyInvitationsPage() {
     navigate('/templates');
   };
   const copy = async (card) => {
-    await navigator.clipboard.writeText(shareUrl(card.data));
+    await navigator.clipboard.writeText(shareUrl(card.id));
     setCopiedId(card.id);
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -74,7 +74,7 @@ export default function MyInvitationsPage() {
                       <button onClick={() => edit(card.id)} className={btn}>
                         <Pencil size={13} /> Edit
                       </button>
-                      <Link to={sharePath(card.data)} className={btn}>
+                      <Link to={sharePath(card.id)} className={btn}>
                         <Eye size={13} /> View
                       </Link>
                       <button onClick={() => copy(card)} className={btn}>

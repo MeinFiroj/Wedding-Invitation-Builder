@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { defaultWeddingData, templates } from '@/data/templates';
 import { readJSON, writeJSON } from '@/utils/storage';
+import { createCard, updateCard } from '@/utils/api';
 
 const DRAFT_KEY = 'vowcard:draft';
 const CARDS_KEY = 'vowcard:cards';
@@ -24,12 +25,19 @@ export function InvitationProvider({ children }) {
   const updateData = useCallback((patch) => setData((d) => ({ ...d, ...patch })), []);
 
   // Save the current draft as a card in "My Invitations" (creates it, or updates the same one)
-  const saveCard = useCallback(() => {
-    const id = cardId ?? crypto.randomUUID();
-    setCards((list) => [{ id, data, updatedAt: Date.now() }, ...list.filter((c) => c.id !== id)]);
-    setCardId(id);
-    return id;
-  }, [cardId, data]);
+  const saveCard = useCallback(async () => {
+  const existing = cards.find((c) => c.id === cardId);
+  let id = cardId;
+  let editKey = existing?.editKey;
+  if (id && editKey) await updateCard(id, data, editKey);
+  else ({ id, editKey } = await createCard(data));
+  setCards((list) => [
+    { id, editKey, data, updatedAt: Date.now() },
+    ...list.filter((c) => c.id !== id && c.id !== cardId),
+  ]);
+  setCardId(id);
+  return id;
+}, [cardId, cards, data]);
 
   const openCard = useCallback(
     (id) => {

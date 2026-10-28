@@ -33,7 +33,7 @@ function Layout() {
 export default function App() {
   return (
     <InvitationProvider>
-      <Splash/>
+      <Splash />
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
@@ -41,7 +41,8 @@ export default function App() {
           <Route path="editor" element={<EditorPage />} />
           <Route path="my-invitations" element={<MyInvitationsPage />} />
         </Route>
-        <Route path="/invite/:id?" element={<InvitationPage />} />
+        <Route path="/i/:id" element={<InvitationPage />} />
+        <Route path="/invite/demo" element={<InvitationPage />} />
       </Routes>
     </InvitationProvider>
   );
